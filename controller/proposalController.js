@@ -7,7 +7,7 @@ import transporter from "../Node-mailer/mailer.js";
 export const proposalSend = async (req, res) => {
   try {
     const { vendors } = req.body;
-    const FRONTEND_URL = "http://localhost:3000";
+    const FRONTEND_URL = "https://procurement-frontend-ten.vercel.app";
 
     console.log("Request is comming")
 
