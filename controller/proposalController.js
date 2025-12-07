@@ -53,7 +53,7 @@ Procurement Team
     res.json({ message: "RFP sent to vendors", rfp });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to send RFP" });
+    res.status(500).json({ error: `Failed to send RFP ${err}`});
   }
 };
 
