@@ -9,6 +9,8 @@ export const proposalSend = async (req, res) => {
     const { vendors } = req.body;
     const FRONTEND_URL = "http://localhost:3000";
 
+    console.log("Request is comming")
+
     const rfp = await Rfp.findById(req.params.id).populate("vendors");
     if (!rfp) return res.status(404).json({ error: "RFP not found" });
 
@@ -17,8 +19,11 @@ export const proposalSend = async (req, res) => {
     //AI PROMPT
     let aiPrompt = proposalPrompt(rfp);
 
+    console.log("Check ",aiPrompt)
+
     const response = await model.invoke(aiPrompt);
     const aiEmailBody = response.content;
+    console.log("check 2 ",aiEmailBody)
 
     // Send email to each vendor
     for (const vendor of vendorDocs) {
@@ -52,7 +57,7 @@ Procurement Team
 
     res.json({ message: "RFP sent to vendors", rfp });
   } catch (err) {
-    console.error(err);
+    console.error("Failed to for proposal ",err);
     res.status(500).json({ error: `Failed to send RFP ${err}`});
   }
 };
