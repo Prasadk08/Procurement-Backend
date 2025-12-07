@@ -28,7 +28,7 @@ const app = express()
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://procurement-frontend-ten.vercel.app/"],
+    origin: ["http://localhost:3000", "https://procurement-frontend-ten.vercel.app"],
     credentials: true,
   })
 );
