@@ -90,7 +90,7 @@ Expected output format:
 --------------------------------------------------
 
 User Input:
-${req.body.input}
+${req.body.input.replace(/\s+/g, " ").trim()}
 `
   
 export default msg
