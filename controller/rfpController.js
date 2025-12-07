@@ -17,7 +17,10 @@ export const getRfps = async (req, res) => {
 
 export const generateRfp = async (req, res) => {
   try {
-    let systemMsg = msg(req);
+    let input = req.body.input
+    input=input.replace(/\s+/g, " ").trim()
+    console.log("Last Input ",input)
+    let systemMsg = msg(input);
     const response = await model.invoke(systemMsg);
 
     let clean = response.content
@@ -30,9 +33,10 @@ export const generateRfp = async (req, res) => {
       aiObj = JSON.parse(clean);
     } catch (err) {
       return res.status(400).json({
-        error: "AI did not return valid JSON",
+        error: "Please Provide Proper Information to generate RFP",
       });
     }
+
 
     if (aiObj && aiObj.error) {
       return res.status(400).json(response);

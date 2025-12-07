@@ -1,96 +1,48 @@
-const msg = (req) => `You are a professional procurement assistant.  
-Your task is to generate a structured RFP object strictly matching the following Mongoose schema:
+const msg = (input) => `
+You are a strict JSON generator.
 
-const itemSchema = {
-  name: String,
-  qty: Number,
-  specs: String,
-};
+Your ONLY job is to generate a structured RFP in **valid JSON**.
 
-const rfpSchema = {
-  title: String,
-  description: String,
-  budget: Number,
-  deliveryDays: Number,
-  paymentTerms: String,
-  warrantyMonths: Number,
-  items: [itemSchema],
-  contact: {
-    company: String,
-    email: String
-  },
-  vendors: [],
-  status: "Pending"
-};
+-------------------------------------------
+RULES — FOLLOW 100% STRICTLY
+-------------------------------------------
 
---------------------------------------------------
-IMPORTANT RULES:
---------------------------------------------------
+1. **Return ONLY pure JSON**:
+   - All keys must have double quotes.
+   - All string values must have double quotes.
+   - Do NOT return JS object syntax.
+   - Do NOT add comments or explanation.
+   - Do NOT include \`\`\`json markers.
+   - No trailing commas.
 
-1. **Return ONLY a valid JavaScript object. No explanation, no text.**
-
-2. Extract ALL of the following fields STRICTLY from the user's input:
-   - **company name** → contact.company  
-   - **email** → contact.email  
-   - **items** → [{ name, qty, specs }]
-   - **budget** → Number
-   - **deliveryDays** → Number
-   - **paymentTerms** → String
-   - **warrantyMonths** → Number  
-     (If the user writes warranty in years → convert to months)
+2. You MUST extract the following fields from user input:
+   - company name → "contact.company"
+   - email → "contact.email"
+   - items → array of { "name", "qty", "specs" }
+   - budget → number
+   - deliveryDays → number
+   - paymentTerms → string
+   - warrantyMonths → number (convert years → months)
 
 3. If ANY mandatory field is missing:
-   - company name  
-   - email  
-   - items  
-   - budget  
-   - deliveryDays  
-   - paymentTerms  
-   - warrantyMonths  
-   
-   Then return EXACTLY:
-   { error: "Insufficient data to create RFP" }
+   Return EXACTLY:
+   { "error": "Insufficient data to create RFP" }
 
-4. **DO NOT guess any values.**  
-If the user has not given a value → treat it as missing.
+4. Do NOT guess values.
+   If the user does not give a value → treat it as missing.
 
-5. **Title** must be short, professional, and derived from the items list.  
-Example: "Laptop Procurement", "Office Equipment Purchase".
+5. Title:
+   Short, professional, derived from items.
 
-6. **Description** must be a short 1–2 line professional summary.
+6. Description:
+   A short 1–2 line summary.
 
-7. vendors → always an empty array.
+7. vendors → always []
+8. status → always "Pending"
 
-8. status → always "Pending".
-
---------------------------------------------------
-
-Example User Input:
-"ABC Industries Pvt Ltd, email info@abc.com needs 20 laptops with 16GB RAM... budget 50,000… delivery 30 days… payment terms Net 30… warranty 1 year."
-
-Expected output format:
-{
-  title: "Laptop Procurement",
-  description: "...",
-  budget: 50000,
-  deliveryDays: 30,
-  paymentTerms: "Net 30",
-  warrantyMonths: 12,
-  items: [
-    { name: "Laptop", qty: 20, specs: "16GB RAM" }
-  ],
-  contact: {
-    company: "ABC Industries Pvt Ltd",
-    email: "info@abc.com"
-  },
-  vendors: [],
-  status: "Pending"
-}
-
---------------------------------------------------
-
-User Input:
-${req.body.input.replace(/\s+/g, " ").trim()}
-`
-  
-export default msg
+-------------------------------------------
+USER INPUT:
+${input}
+-------------------------------------------
+`;
+export default msg;
