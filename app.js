@@ -2,22 +2,36 @@ import express from "express"
 import cors from "cors"
 
 import mongoose from "mongoose";
+import dotenv from "dotenv"
+
 
 import compareRoutes from "./route/CompareRoute.js"
 import rfpRoutes from "./route/RfpRoute.js"
 import vendorRoutes from "./route/VendorRoute.js"
 import proposalRoutes from "./route/ProposalRoute.js"
 
+dotenv.config()
 
+// let localDbUrl = mongodb://127.0.0.1:27017/rfp
+
+let atlasUrl = process.env.MONGODB_URI
 async function main(){
-    await mongoose.connect("mongodb://127.0.0.1:27017/rfp")
+    await mongoose.connect(atlasUrl)
 }
 
 main().then((res)=> console.log("Connected to Database"))
 .catch((err)=> console.log("Failed to connect Db ",err))
 
 
+
 const app = express()
+
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://procurement-frontend-ten.vercel.app/"],
+    credentials: true,
+  })
+);
 
 const port = 8080
 
