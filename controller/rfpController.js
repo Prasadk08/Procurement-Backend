@@ -19,7 +19,7 @@ export const generateRfp = async (req, res) => {
   try {
     let input = req.body.input
     input=input.replace(/\s+/g, " ").trim()
-    console.log("Last Input ",input)
+
     let systemMsg = msg(input);
     const response = await model.invoke(systemMsg);
 

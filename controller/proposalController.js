@@ -2,15 +2,12 @@ import Vendor from "../model/Vendors.js";
 import Rfp from "../model/Rfp.js";
 import proposalPrompt from "../Ai-prompt/proposalPrompt.js";
 import model from "../Ai-Agent/gemini.js";
-// import transporter from "../Node-mailer/mailer.js";
-import { sendEmail } from "../Node-mailer/mailer.js";
+import transporter from "../Node-mailer/mailer.js";
 
 export const proposalSend = async (req, res) => {
   try {
     const { vendors } = req.body;
     const FRONTEND_URL = "https://procurement-frontend-ten.vercel.app";
-
-    console.log("Request is comming 1")
 
 
     const rfp = await Rfp.findById(req.params.id).populate("vendors");
@@ -18,16 +15,13 @@ export const proposalSend = async (req, res) => {
 
     const vendorDocs = await Vendor.find({ _id: { $in: vendors } });
 
-    console.log("Request is comming 2",vendorDocs)
-
-
     //AI PROMPT
     let aiPrompt = proposalPrompt(rfp);
-    console.log("Request is comming 3",aiPrompt)
+
 
 
     const response = await model.invoke(aiPrompt);
-    console.log("Request is coming 4",response)
+
     const aiEmailBody = response.content;
 
     // Send email to each vendor
@@ -48,11 +42,12 @@ Thank you,
 Procurement Team
 `;
 
-     await sendEmail({
-  to: vendor.email,
-  subject: `New RFP: ${rfp.title}`,
-  text: finalEmail,
-});
+      await transporter.sendMail({
+        from: '"Procurement Team" <kshirsagarprasad025@gmail.com>',
+        to: vendor.email,
+        subject: `New RFP: ${rfp.title}`,
+        text: finalEmail,
+      });
     }
 
     rfp.vendors = vendors;
